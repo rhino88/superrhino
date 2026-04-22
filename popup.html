@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>superrhino</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <nav class="tabs" id="tab-nav">
+      <button class="tab active" data-panel="tabs">
+        <span class="tab-ico">🚮</span><span>Tabs</span>
+      </button>
+      <button class="tab" data-panel="cookies">
+        <span class="tab-ico">🍪</span><span>Cookies</span>
+      </button>
+      <button class="tab" data-panel="redirects">
+        <span class="tab-ico">🔀</span><span>Redirects</span>
+      </button>
+    </nav>
+
+    <main>
+      <section class="panel active" data-panel="tabs">
+        <div class="card row">
+          <label for="enabled">Auto-close enabled</label>
+          <button id="enabled" class="toggle" role="switch" aria-checked="true"></button>
+        </div>
+
+        <div class="card row">
+          <label for="minutes">Close after</label>
+          <input id="minutes" type="number" min="1" step="1" value="15" />
+          <span class="suffix">minutes of inactivity</span>
+        </div>
+
+        <p class="stat">
+          <strong id="stat-closed">0</strong> tabs auto-closed
+          &middot;
+          <button id="run-now" type="button" class="linkish">Run now</button>
+          <span id="run-result" class="muted"></span>
+        </p>
+
+        <h2 class="section-title">Excluded hosts</h2>
+
+        <div class="add-row">
+          <input id="host-input" type="text" placeholder="e.g. google.com" />
+          <button id="host-add" class="primary">Add</button>
+        </div>
+
+        <ul id="host-list" class="host-list"></ul>
+      </section>
+
+      <section class="panel" data-panel="cookies" hidden>
+        <div class="cookies-header">
+          <span id="cookies-domain" class="cookies-domain">—</span>
+          <span id="cookies-count" class="count-pill">0</span>
+        </div>
+        <div class="cookies-scroll">
+          <ul id="cookies-list" class="cookies-list"></ul>
+          <div id="cookies-empty" class="empty-state" hidden>No cookies.</div>
+        </div>
+        <div class="action-bar">
+          <button id="cookies-add" class="action">
+            <span class="action-ico">＋</span><span>Add</span>
+          </button>
+          <button id="cookies-nuke" class="action">
+            <span class="action-ico">🗑</span><span>Delete All</span>
+          </button>
+          <button id="cookies-refresh-btn" class="action">
+            <span class="action-ico">↻</span><span>Refresh</span>
+          </button>
+          <button id="cookies-export" class="action">
+            <span class="action-ico">⇪</span><span>Export</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="redirects" hidden>
+        <p class="muted lead">
+          All URLs your browser visited on the way to the current page. If no
+          redirects took place, only one URL is listed.
+        </p>
+        <ul id="redirects-list" class="redirects-list"></ul>
+        <div id="redirects-empty" class="empty-state" hidden>
+          No redirect data captured. Reload the page to record the chain.
+        </div>
+        <div class="action-bar">
+          <button id="redirects-refresh" class="action">
+            <span class="action-ico">↻</span><span>Refresh</span>
+          </button>
+          <button id="redirects-copy" class="action">
+            <span class="action-ico">⎘</span><span>Copy</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
