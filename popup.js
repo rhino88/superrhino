@@ -579,9 +579,7 @@ async function loadRedirects() {
   const { [key]: chain = [] } = await chrome.storage.session.get(key);
 
   const display = [...chain];
-  const last = display[display.length - 1];
-  const needsFinal = !last || last.kind !== "final" || last.url !== tab.url;
-  if (needsFinal && tab.url) {
+  if (display.length === 0 && tab.url) {
     display.push({
       url: tab.url,
       statusCode: null,
