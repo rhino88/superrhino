@@ -76,10 +76,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
 chrome.tabs.onRemoved.addListener((tabId) => {
   forgetTab(tabId);
+  activeRequestId.delete(tabId);
+  redirectQueues.delete(tabId);
   chrome.storage.session.remove(`redirects_${tabId}`);
 });
 
 const redirectQueues = new Map();
+const activeRequestId = new Map();
 
 function queueRedirectWrite(tabId, fn) {
   const prev = redirectQueues.get(tabId) || Promise.resolve();
@@ -102,6 +105,10 @@ async function appendChain(tabId, entry) {
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     if (details.tabId < 0) return;
+    // A redirect continuation reuses the same requestId and fires
+    // onBeforeRequest again — don't reset, or we'd wipe the redirect steps.
+    if (activeRequestId.get(details.tabId) === details.requestId) return;
+    activeRequestId.set(details.tabId, details.requestId);
     queueRedirectWrite(details.tabId, () => resetChain(details.tabId));
   },
   { urls: ['<all_urls>'], types: ['main_frame'] }
