@@ -16,6 +16,9 @@
       <button class="tab" data-panel="redirects">
         <span class="tab-ico">🔀</span><span>Redirects</span>
       </button>
+      <button class="tab" data-panel="rulers">
+        <span class="tab-ico">📏</span><span>Rulers</span>
+      </button>
     </nav>
 
     <main>
@@ -69,6 +72,25 @@
           </button>
           <button id="cookies-export" class="action">
             <span class="action-ico">⇪</span><span>Export</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="rulers" hidden>
+        <p class="muted lead">
+          Drop guide lines onto the page, then drag them to check alignment.
+          Double-click a guide to remove it.
+        </p>
+        <div id="rulers-status" class="muted" style="font-size:12px;padding:0 4px;">—</div>
+        <div class="rulers-actions">
+          <button id="ruler-add-h" class="ruler-btn">
+            <span class="ruler-ico">↔</span><span>Horizontal</span>
+          </button>
+          <button id="ruler-add-v" class="ruler-btn">
+            <span class="ruler-ico">↕</span><span>Vertical</span>
+          </button>
+          <button id="ruler-clear" class="ruler-btn danger">
+            <span class="ruler-ico">🗑</span><span>Clear all</span>
           </button>
         </div>
       </section>

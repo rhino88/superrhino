@@ -19,6 +19,7 @@ function activatePanel(name) {
   });
   if (name === "cookies") loadCookies();
   if (name === "redirects") loadRedirects();
+  if (name === "rulers") refreshRulersStatus();
 }
 
 tabButtons.forEach((btn) => {
@@ -650,6 +651,82 @@ $redirectsCopy.addEventListener("click", async () => {
   } catch {
     alert("Copy failed.");
   }
+});
+
+// ---------- Rulers panel ----------
+const $rulerAddH = document.getElementById("ruler-add-h");
+const $rulerAddV = document.getElementById("ruler-add-v");
+const $rulerClear = document.getElementById("ruler-clear");
+const $rulerStatus = document.getElementById("rulers-status");
+
+function canInjectInto(url) {
+  if (!url) return false;
+  if (url.startsWith("chrome://") || url.startsWith("edge://") || url.startsWith("about:")) return false;
+  if (url.startsWith("chrome-extension://")) return false;
+  if (url.startsWith("https://chrome.google.com/webstore") || url.startsWith("https://chromewebstore.google.com")) return false;
+  return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://");
+}
+
+function setRulerButtonsEnabled(enabled) {
+  [$rulerAddH, $rulerAddV, $rulerClear].forEach((b) => (b.disabled = !enabled));
+}
+
+async function ensureRulersInjected(tabId) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ["rulers.js"],
+  });
+}
+
+async function runOnRulers(expr, args = []) {
+  const tab = await getActiveTab();
+  if (!tab || !canInjectInto(tab.url)) {
+    $rulerStatus.textContent = "This page can't host rulers.";
+    setRulerButtonsEnabled(false);
+    return null;
+  }
+  try {
+    await ensureRulersInjected(tab.id);
+    const [result] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: expr,
+      args,
+    });
+    return result?.result;
+  } catch (e) {
+    $rulerStatus.textContent = `Error: ${e.message}`;
+    return null;
+  }
+}
+
+async function refreshRulersStatus() {
+  const tab = await getActiveTab();
+  if (!tab || !canInjectInto(tab.url)) {
+    $rulerStatus.textContent = "This page can't host rulers.";
+    setRulerButtonsEnabled(false);
+    return;
+  }
+  setRulerButtonsEnabled(true);
+  const count = await runOnRulers(
+    () => (window.__superrhinoRulers ? window.__superrhinoRulers.count() : 0)
+  );
+  $rulerStatus.textContent =
+    count === 1 ? "1 guide on this page" : `${count ?? 0} guides on this page`;
+}
+
+$rulerAddH.addEventListener("click", async () => {
+  await runOnRulers((o) => window.__superrhinoRulers.addGuide(o), ["horizontal"]);
+  refreshRulersStatus();
+});
+
+$rulerAddV.addEventListener("click", async () => {
+  await runOnRulers((o) => window.__superrhinoRulers.addGuide(o), ["vertical"]);
+  refreshRulersStatus();
+});
+
+$rulerClear.addEventListener("click", async () => {
+  await runOnRulers(() => window.__superrhinoRulers.clearAll());
+  refreshRulersStatus();
 });
 
 // ---------- Init ----------

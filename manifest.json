@@ -3,7 +3,7 @@
   "name": "superrhino",
   "version": "0.2.0",
   "description": "Auto-close inactive tabs, manage cookies, and inspect redirect chains.",
-  "permissions": ["tabs", "storage", "alarms", "cookies", "webRequest", "clipboardWrite"],
+  "permissions": ["tabs", "storage", "alarms", "cookies", "webRequest", "clipboardWrite", "scripting"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
