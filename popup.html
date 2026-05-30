@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
+    <header class="app-bar">
+      <img class="brand-mark" src="icons/icon-48.png" alt="" />
+      <div class="brand-text">
+        <span class="brand-name">superrhino</span>
+        <span class="brand-tag">browser toolkit</span>
+      </div>
+    </header>
+
     <nav class="tabs" id="tab-nav">
       <button class="tab active" data-panel="tabs">
         <span class="tab-ico">🚮</span><span>Tabs</span>
@@ -81,7 +89,7 @@
           Drop guide lines onto the page, then drag them to check alignment.
           Double-click a guide to remove it.
         </p>
-        <div id="rulers-status" class="muted" style="font-size:12px;padding:0 4px;">—</div>
+        <div id="rulers-status" class="ruler-status">—</div>
         <div class="rulers-actions">
           <button id="ruler-add-h" class="ruler-btn">
             <span class="ruler-ico">↔</span><span>Horizontal</span>
